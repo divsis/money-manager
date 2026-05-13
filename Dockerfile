@@ -1,5 +1,5 @@
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY target/money-manager-0.0.1-SNAPSHOT.jar money-manager.jar
-EXPOSE 9090
-ENTRYPOINT ["java", "-jar", "money-manager.jar"]
+COPY target/money-manager-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
