@@ -6,6 +6,7 @@ import com.divsis.money_manager.entity.ProfileEntity;
 import com.divsis.money_manager.repository.ProfileRepository;
 import com.divsis.money_manager.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -27,11 +28,13 @@ public class ProfileService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    @Value("${app.activation.url}")
+    private String activationUrl;
     public ProfileDTO registerProfile(ProfileDTO profileDTO) {
         ProfileEntity newProfile=toEntity(profileDTO);
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile=profileRepository.save(newProfile);
-        String activationLink = "http://localhost:8080/api/v1.0/activate?token="+newProfile.getActivationToken();
+        String activationLink = activationUrl+"api/v1.0/activate?token="+newProfile.getActivationToken();
         String subject = "Activate Your Money Manager Account";
         String text = "Dear "+newProfile.getName()+",\n\nPlease click the following link to activate your account:\n"+activationLink+"\n\nBest regards,\nMoney Manager Team";
         emailService.sendEmail(newProfile.getEmail(),subject,text);
